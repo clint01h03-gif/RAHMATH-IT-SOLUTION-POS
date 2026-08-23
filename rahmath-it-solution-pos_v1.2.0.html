@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAHMATH IT SOLUTION — POS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brick-1:#0d1b30;
+    --brick-2:#132a4d;
+    --brick-mortar:#0a1424;
+    --lamp-core:#fff3d6;
+    --lamp-glow:#ffcf7a;
+    --lamp-glow-soft:#ffb84d;
+    --ink:#eaf1ff;
+    --ink-dim:#b7c6e6;
+    --glass:rgba(18,32,58,0.38);
+    --glass-border:rgba(255,214,150,0.22);
+    --accent:#ffd88a;
+    --accent-2:#ffb84d;
+    --white:#ffffff;
+    --navy-900:#0a1120;
+    --navy-800:#111b30;
+    --navy-700:#16233d;
+    --navy-600:#1c2c4a;
+    --ok:#7ee3a8;
+    --danger:#ff8b8b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;background:var(--navy-900);font-family:'Inter',sans-serif;color:var(--ink);}
+  ::selection{background:var(--accent); color:#1a1200;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+
+  /* ---------------- LOGIN SCREEN ---------------- */
+  #loginScreen{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:60px 20px;
+    position:relative;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% 0%, rgba(255,184,77,0.05), transparent 60%),
+      repeating-linear-gradient(0deg, var(--brick-mortar) 0px, var(--brick-mortar) 3px, transparent 3px, transparent 42px),
+      repeating-linear-gradient(90deg, var(--brick-mortar) 0px, var(--brick-mortar) 3px, transparent 3px, transparent 84px),
+      linear-gradient(180deg, var(--brick-1) 0%, var(--brick-2) 55%, var(--brick-1) 100%);
+    background-size:100% 100%, 84px 42px, 84px 42px, 100% 100%;
+    animation: stage-in 1s ease both;
+    transition: opacity .5s ease;
+  }
+  #loginScreen::before{
+    content:"";
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(90deg, var(--brick-mortar) 0px, var(--brick-mortar) 3px, transparent 3px, transparent 84px);
+    background-position:42px 42px; background-size:84px 84px;
+    opacity:0.9; pointer-events:none;
+  }
+  @keyframes stage-in{from{opacity:0;}to{opacity:1;}}
+
+  .brand{text-align:center; z-index:5; opacity:0; animation:brand-drop 1s cubic-bezier(.2,.9,.25,1) .3s forwards; margin-bottom:6px;}
+  @keyframes brand-drop{from{opacity:0; transform:translateY(-14px);}to{opacity:1; transform:translateY(0);}}
+  .brand-eyebrow{font-size:11px;letter-spacing:.4em;color:var(--ink-dim);text-transform:uppercase;margin:0 0 6px;opacity:.75;}
+  .brand-title{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:clamp(24px,5vw,40px);letter-spacing:.03em;margin:0;color:var(--white);
+    text-shadow:0 0 18px rgba(255,207,122,.35), 0 0 46px rgba(255,184,77,.15);}
+  .brand-title .accent{color:var(--accent);}
+
+  .lamp-card-wrap{position:relative; display:flex; flex-direction:column; align-items:center; z-index:5;}
+  .cord{width:3px;height:56px;background:linear-gradient(180deg,rgba(0,0,0,.6),#1a1a1a);transform-origin:top center;animation:sway 4.5s ease-in-out infinite;}
+  @keyframes sway{0%,100%{transform:rotate(-1.2deg);}50%{transform:rotate(1.2deg);}}
+  .fixture-wrap{transform-origin:top center;animation:sway 4.5s ease-in-out infinite;display:flex;flex-direction:column;align-items:center;}
+  .fixture{width:110px;height:15px;background:linear-gradient(180deg,#2a2f3a,#12151b);border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.5);}
+  .shade{width:0;height:0;border-left:58px solid transparent;border-right:58px solid transparent;border-top:24px solid #171a22;margin-top:-2px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));}
+  .bulb{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 50% 40%, var(--lamp-core), var(--lamp-glow-soft) 70%);margin-top:2px;
+    box-shadow:0 0 14px 4px var(--lamp-glow), 0 0 40px 14px rgba(255,184,77,.5); animation:flicker 3.2s ease-in-out infinite;}
+  @keyframes flicker{0%,100%{opacity:1;box-shadow:0 0 14px 4px var(--lamp-glow),0 0 40px 14px rgba(255,184,77,.5);}
+    45%{opacity:.94;box-shadow:0 0 12px 3px var(--lamp-glow),0 0 32px 10px rgba(255,184,77,.42);}
+    52%{opacity:1;box-shadow:0 0 16px 5px var(--lamp-glow),0 0 46px 16px rgba(255,184,77,.55);}70%{opacity:.97;}}
+
+  .light-cone{position:absolute;top:0;left:50%;width:560px;height:420px;transform:translateX(-50%);
+    background:radial-gradient(ellipse 240px 300px at 50% 0%, rgba(255,224,160,.5), rgba(255,196,110,.2) 38%, transparent 70%);
+    pointer-events:none;z-index:0;animation:glow-breathe 3.2s ease-in-out infinite;mix-blend-mode:screen;}
+  @keyframes glow-breathe{0%,100%{opacity:.85;}50%{opacity:1;}}
+
+  .card{position:relative;z-index:2;width:100%;max-width:390px;margin-top:26px;padding:38px 32px 28px;
+    background:var(--glass);border:1px solid var(--glass-border);border-radius:22px;
+    backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:0 20px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+    opacity:0;transform:translateY(24px) scale(.97);animation:card-in .9s cubic-bezier(.2,.9,.25,1) .85s forwards;}
+  @keyframes card-in{to{opacity:1;transform:translateY(0) scale(1);}}
+  .card h1{font-family:'Baloo 2',sans-serif;font-weight:700;font-size:30px;color:var(--white);text-align:center;margin:0 0 26px;}
+
+  .field{position:relative;margin-bottom:16px;}
+  .field input{width:100%;padding:14px 44px 14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.06);color:var(--white);font-size:15px;font-family:'Inter',sans-serif;outline:none;
+    transition:border-color .25s,box-shadow .25s,background .25s;}
+  .field input::placeholder{color:rgba(234,241,255,.55);}
+  .field input:focus{border-color:var(--accent);background:rgba(255,255,255,.09);box-shadow:0 0 0 4px rgba(255,216,138,.14),0 0 20px rgba(255,184,77,.18);}
+  .field .icon{position:absolute;right:15px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:rgba(234,241,255,.75);pointer-events:none;transition:color .25s;}
+  .field input:focus ~ .icon{color:var(--accent);}
+
+  .row{display:flex;align-items:center;justify-content:space-between;margin:2px 0 20px;font-size:13px;}
+  .remember{display:flex;align-items:center;gap:8px;color:var(--ink-dim);cursor:pointer;user-select:none;}
+  .remember input{appearance:none;-webkit-appearance:none;width:15px;height:15px;border-radius:4px;border:1.4px solid rgba(255,255,255,.35);background:rgba(255,255,255,.05);cursor:pointer;position:relative;transition:background .2s,border-color .2s;}
+  .remember input:checked{background:var(--accent);border-color:var(--accent);}
+  .remember input:checked::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #1a1200;border-width:0 2px 2px 0;transform:rotate(40deg);}
+  .forgot{color:var(--accent);text-decoration:none;font-weight:500;}
+  .forgot:hover{opacity:.75;}
+
+  .btn-login{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(180deg,#fff,#f2f2f2);color:#111;font-weight:700;font-size:15px;cursor:pointer;position:relative;overflow:hidden;transition:transform .18s,box-shadow .25s;box-shadow:0 8px 22px rgba(0,0,0,.28);}
+  .btn-login:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(255,196,110,.3),0 4px 14px rgba(0,0,0,.3);}
+  .btn-login .shine{position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(120deg,transparent,rgba(255,255,255,.7),transparent);transform:skewX(-20deg);animation:shine-sweep 3.4s ease-in-out infinite;}
+  @keyframes shine-sweep{0%{left:-60%;}35%{left:130%;}100%{left:130%;}}
+
+  .switch{text-align:center;margin-top:16px;font-size:13.5px;color:var(--ink-dim);}
+  .switch a{color:var(--white);font-weight:700;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.4);}
+  .switch a:hover{color:var(--accent);border-color:var(--accent);}
+  .tag{text-align:center;margin-top:20px;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:rgba(183,198,230,.45);opacity:0;animation:brand-drop 1s ease 1.3s forwards;}
+  .err{color:var(--danger);font-size:12.5px;text-align:center;margin:-10px 0 14px;min-height:14px;}
+
+  /* ---------------- APP SHELL ---------------- */
+  #app{display:none; min-height:100vh;}
+  #app.active{display:flex;}
+
+  .sidebar{
+    width:236px; flex-shrink:0; background:linear-gradient(180deg, var(--navy-800), var(--navy-900));
+    border-right:1px solid rgba(255,255,255,.06); display:flex; flex-direction:column; padding:22px 14px;
+    position:sticky; top:0; height:100vh;
+  }
+  .sb-brand{display:flex;align-items:center;gap:10px;padding:6px 8px 22px;}
+  .sb-brand .dot{width:34px;height:34px;border-radius:10px;background:radial-gradient(circle at 35% 30%, var(--accent), var(--accent-2) 70%);box-shadow:0 0 16px rgba(255,184,77,.4);flex-shrink:0;}
+  .sb-brand .txt{line-height:1.2;}
+  .sb-brand .txt b{font-family:'Baloo 2',sans-serif;font-size:14.5px;display:block;color:var(--white);}
+  .sb-brand .txt span{font-size:10px;color:var(--ink-dim);letter-spacing:.05em;}
+
+  .nav{display:flex;flex-direction:column;gap:3px;flex:1;}
+  .nav-item{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;cursor:pointer;color:var(--ink-dim);font-size:14px;font-weight:500;transition:background .18s,color .18s;user-select:none;}
+  .nav-item svg{width:18px;height:18px;flex-shrink:0;}
+  .nav-item:hover{background:rgba(255,255,255,.05);color:var(--white);}
+  .nav-item.active{background:linear-gradient(90deg, rgba(255,216,138,.16), rgba(255,216,138,.03));color:var(--accent);}
+  .nav-item.active svg{color:var(--accent);}
+
+  .sb-foot{padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}
+  .logout-btn{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:11px;color:var(--danger);font-size:14px;font-weight:600;cursor:pointer;transition:background .18s;}
+  .logout-btn:hover{background:rgba(255,139,139,.08);}
+
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 30px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(10,17,32,.6);position:sticky;top:0;z-index:5;backdrop-filter:blur(10px);}
+  .topbar h2{margin:0;font-family:'Baloo 2',sans-serif;font-size:20px;color:var(--white);}
+  .topbar .sub{font-size:12.5px;color:var(--ink-dim);margin-top:2px;}
+  .profile{display:flex;align-items:center;gap:10px;}
+  .profile .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#1a1200;font-size:13px;}
+
+  .content{padding:26px 30px 60px;}
+  .section{display:none;animation:sec-in .4s ease both;}
+  .section.active{display:block;}
+  @keyframes sec-in{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:26px;}
+  .stat-card{background:linear-gradient(160deg,var(--navy-700),var(--navy-800));border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px 20px;position:relative;overflow:hidden;}
+  .stat-card::after{content:"";position:absolute;top:-30%;right:-20%;width:120px;height:120px;background:radial-gradient(circle, rgba(255,184,77,.14), transparent 70%);}
+  .stat-card .label{font-size:12px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em;}
+  .stat-card .value{font-family:'Baloo 2',sans-serif;font-size:26px;font-weight:700;color:var(--white);margin-top:6px;}
+  .stat-card .value.gold{color:var(--accent);}
+
+  .panel{background:var(--navy-800);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:22px;margin-bottom:22px;}
+  .panel h3{margin:0 0 16px;font-family:'Baloo 2',sans-serif;font-size:16px;color:var(--white);}
+
+  .grid-2{display:grid;grid-template-columns:1.1fr 1.5fr;gap:20px;}
+  @media(max-width:900px){.grid-2{grid-template-columns:1fr;}}
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .form-grid.single{grid-template-columns:1fr;}
+  .form-grid label{font-size:12px;color:var(--ink-dim);display:block;margin-bottom:5px;}
+  .form-grid input, .form-grid select, .form-grid textarea{
+    width:100%;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
+    color:var(--white);font-size:13.5px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+  .form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus{border-color:var(--accent);}
+  .form-grid textarea{resize:vertical;min-height:60px;}
+
+  .btn{padding:10px 18px;border-radius:10px;border:none;font-weight:700;font-size:13.5px;cursor:pointer;transition:transform .15s,opacity .15s;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-gold{background:linear-gradient(180deg,var(--accent),var(--accent-2));color:#1a1200;}
+  .btn-ghost{background:rgba(255,255,255,.06);color:var(--ink);border:1px solid rgba(255,255,255,.12);}
+  .btn-danger{background:rgba(255,139,139,.12);color:var(--danger);}
+  .btn-sm{padding:6px 12px;font-size:12px;border-radius:8px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{text-align:left;color:var(--ink-dim);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.08);}
+  td{padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.05);color:var(--ink);}
+  tr:last-child td{border-bottom:none;}
+  .badge{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block;}
+  .badge.ok{background:rgba(126,227,168,.14);color:var(--ok);}
+  .badge.low{background:rgba(255,139,139,.14);color:var(--danger);}
+  .badge.dev{background:rgba(255,216,138,.14);color:var(--accent);}
+  .badge.live{background:rgba(126,227,168,.14);color:var(--ok);}
+  .badge.plan{background:rgba(183,198,230,.14);color:var(--ink-dim);}
+  .empty{color:var(--ink-dim);font-size:13px;padding:20px 0;text-align:center;}
+
+  .cart-list{display:flex;flex-direction:column;gap:8px;margin:14px 0;}
+  .cart-row{display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,.04);padding:9px 12px;border-radius:9px;font-size:13px;}
+  .cart-row .rm{color:var(--danger);cursor:pointer;font-size:12px;font-weight:700;}
+  .total-line{display:flex;justify-content:space-between;align-items:center;padding-top:12px;margin-top:8px;border-top:1px dashed rgba(255,255,255,.15);font-family:'Baloo 2',sans-serif;font-size:19px;color:var(--white);}
+  .total-line b{color:var(--accent);}
+
+  .bars{display:flex;align-items:flex-end;gap:14px;height:180px;padding-top:10px;}
+  .bar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+  .bar{width:100%;max-width:34px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--accent),var(--accent-2));transition:height .5s ease;}
+  .bar-col .bl{font-size:10.5px;color:var(--ink-dim);margin-top:8px;}
+  .bar-col .bv{font-size:11px;color:var(--white);font-weight:700;margin-bottom:4px;}
+
+  .soft-card{background:var(--navy-700);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;}
+  .soft-card .top{display:flex;justify-content:space-between;align-items:flex-start;}
+  .soft-card h4{margin:0;font-family:'Baloo 2',sans-serif;font-size:15px;color:var(--white);}
+  .soft-card .tech{font-size:11.5px;color:var(--accent);}
+  .soft-card p{font-size:12.5px;color:var(--ink-dim);margin:2px 0 4px;line-height:1.5;}
+  .soft-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--navy-700);border:1px solid rgba(255,216,138,.3);color:var(--white);padding:12px 18px;border-radius:12px;font-size:13.5px;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:99;opacity:0;transform:translateY(10px);transition:opacity .3s,transform .3s;}
+  .toast.show{opacity:1;transform:translateY(0);}
+
+  @media(max-width:800px){
+    .sidebar{position:fixed;left:-260px;z-index:50;box-shadow:0 0 40px rgba(0,0,0,.5);transition:left .25s ease;}
+    .sidebar.open{left:0;}
+    .menu-btn{display:flex !important;}
+    .content{padding:20px 16px 50px;}
+    .topbar{padding:14px 16px;}
+  }
+  .menu-btn{display:none;align-items:center;justify-content:center;width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.06);cursor:pointer;color:var(--white);}
+
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important;animation-iteration-count:1 !important;}}
+</style>
+</head>
+<body>
+
+<!-- ============= LOGIN ============= -->
+<div id="loginScreen">
+  <div class="brand">
+    <p class="brand-eyebrow">Point of Sale · Business Software</p>
+    <h1 class="brand-title">RAHMATH <span class="accent">IT</span> SOLUTION</h1>
+  </div>
+
+  <div class="lamp-card-wrap">
+    <div class="light-cone"></div>
+    <div class="cord"></div>
+    <div class="fixture-wrap">
+      <div class="fixture"></div>
+      <div class="shade"></div>
+      <div class="bulb"></div>
+    </div>
+
+    <form class="card" id="loginForm" autocomplete="off">
+      <h1>Login</h1>
+      <div class="field">
+        <input type="text" id="loginUser" placeholder="Username" required />
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="field">
+        <input type="password" id="loginPass" placeholder="Password" required />
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="row">
+        <label class="remember"><input type="checkbox"/> Remember me</label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+      <p class="err" id="loginErr"></p>
+      <button type="submit" class="btn-login"><span class="shine"></span>Login</button>
+      <p class="switch">Don't have an account? <a href="#">Register</a></p>
+    </form>
+    <p class="tag">POS · Billing · Business Management Software</p>
+  </div>
+</div>
+
+<!-- ============= APP ============= -->
+<div id="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand">
+      <div class="dot"></div>
+      <div class="txt"><b>RAHMATH IT</b><span>SOLUTION · POS</span></div>
+    </div>
+    <nav class="nav" id="navList">
+      <div class="nav-item active" data-sec="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-sec="today">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Today
+      </div>
+      <div class="nav-item" data-sec="billing">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h9l4 4v16H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+        Billing
+      </div>
+      <div class="nav-item" data-sec="inventory">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        Inventory
+      </div>
+      <div class="nav-item" data-sec="report">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg>
+        Report
+      </div>
+      <div class="nav-item" data-sec="customer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="4"/><path d="M2 21v-1a7 7 0 0 1 14 0v1"/><circle cx="18" cy="9" r="3"/><path d="M22 21v-1a5 5 0 0 0-4-4.9"/></svg>
+        Customer
+      </div>
+      <div class="nav-item" data-sec="cooked">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v4H4zM4 12h10v8H4zM17 12h3v8h-3z"/></svg>
+        Cooked Softwares
+      </div>
+      <div class="nav-item" data-sec="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"/></svg>
+        Settings
+      </div>
+    </nav>
+    <div class="sb-foot">
+      <div class="logout-btn" id="logoutBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Logout
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="menu-btn" id="menuBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </div>
+        <div>
+          <h2 id="pageTitle">Dashboard</h2>
+          <div class="sub" id="pageSub">Overview of your business</div>
+        </div>
+      </div>
+      <div class="profile">
+        <div class="avatar" id="avatarInit">RA</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <section class="section active" id="sec-dashboard">
+        <div class="cards">
+          <div class="stat-card"><div class="label">Total Sales</div><div class="value gold" id="dashTotalSales">Rs. 0</div></div>
+          <div class="stat-card"><div class="label">Total Bills</div><div class="value" id="dashTotalBills">0</div></div>
+          <div class="stat-card"><div class="label">Products</div><div class="value" id="dashTotalProducts">0</div></div>
+          <div class="stat-card"><div class="label">Customers</div><div class="value" id="dashTotalCustomers">0</div></div>
+        </div>
+        <div class="panel">
+          <h3>Recent Bills</h3>
+          <div id="dashRecentBills"></div>
+        </div>
+      </section>
+
+      <!-- TODAY -->
+      <section class="section" id="sec-today">
+        <div class="cards">
+          <div class="stat-card"><div class="label">Today's Sales</div><div class="value gold" id="todaySales">Rs. 0</div></div>
+          <div class="stat-card"><div class="label">Today's Bills</div><div class="value" id="todayBillsCount">0</div></div>
+          <div class="stat-card"><div class="label">Low Stock Items</div><div class="value" id="todayLowStock">0</div></div>
+        </div>
+        <div class="panel">
+          <h3>Today's Bills</h3>
+          <div id="todayBillsList"></div>
+        </div>
+      </section>
+
+      <!-- BILLING -->
+      <section class="section" id="sec-billing">
+        <div class="grid-2">
+          <div class="panel">
+            <h3>New Bill</h3>
+            <div class="form-grid single">
+              <div><label>Customer Name</label><input type="text" id="billCustomer" placeholder="Walk-in customer"/></div>
+            </div>
+            <div class="form-grid" style="margin-top:12px;">
+              <div><label>Item Name</label><input type="text" id="billItemName" placeholder="e.g. Rice 1kg"/></div>
+              <div><label>Qty</label><input type="number" id="billItemQty" placeholder="1" min="1" value="1"/></div>
+              <div><label>Price (Rs.)</label><input type="number" id="billItemPrice" placeholder="0.00" min="0"/></div>
+              <div style="display:flex;align-items:flex-end;"><button class="btn btn-ghost" style="width:100%;" onclick="addCartItem()">+ Add Item</button></div>
+            </div>
+            <div class="cart-list" id="cartList"></div>
+            <div class="total-line">Total <b id="cartTotal">Rs. 0.00</b></div>
+            <button class="btn btn-gold" style="width:100%;margin-top:14px;" onclick="saveBill()">Save Bill</button>
+          </div>
+          <div class="panel">
+            <h3>All Bills</h3>
+            <div id="allBillsList"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INVENTORY -->
+      <section class="section" id="sec-inventory">
+        <div class="panel">
+          <h3>Add Product</h3>
+          <div class="form-grid">
+            <div><label>Product Name</label><input type="text" id="invName" placeholder="e.g. Sugar 1kg"/></div>
+            <div><label>Category</label><input type="text" id="invCategory" placeholder="e.g. Grocery"/></div>
+            <div><label>Stock Qty</label><input type="number" id="invStock" placeholder="0" min="0"/></div>
+            <div><label>Price (Rs.)</label><input type="number" id="invPrice" placeholder="0.00" min="0"/></div>
+          </div>
+          <button class="btn btn-gold" style="margin-top:14px;" onclick="addInventory()">+ Add Product</button>
+        </div>
+        <div class="panel">
+          <h3>Products</h3>
+          <div id="inventoryList"></div>
+        </div>
+      </section>
+
+      <!-- REPORT -->
+      <section class="section" id="sec-report">
+        <div class="panel">
+          <h3>Sales — Last 7 Days</h3>
+          <div class="bars" id="reportBars"></div>
+        </div>
+        <div class="cards">
+          <div class="stat-card"><div class="label">Avg. Bill Value</div><div class="value gold" id="repAvgBill">Rs. 0</div></div>
+          <div class="stat-card"><div class="label">Best Day</div><div class="value" id="repBestDay">—</div></div>
+          <div class="stat-card"><div class="label">Total Items Sold</div><div class="value" id="repItemsSold">0</div></div>
+        </div>
+      </section>
+
+      <!-- CUSTOMER -->
+      <section class="section" id="sec-customer">
+        <div class="panel">
+          <h3>Add Customer</h3>
+          <div class="form-grid">
+            <div><label>Name</label><input type="text" id="custName" placeholder="Customer name"/></div>
+            <div><label>Phone</label><input type="text" id="custPhone" placeholder="07X XXX XXXX"/></div>
+            <div><label>Email (optional)</label><input type="text" id="custEmail" placeholder="name@email.com"/></div>
+          </div>
+          <button class="btn btn-gold" style="margin-top:14px;" onclick="addCustomer()">+ Add Customer</button>
+        </div>
+        <div class="panel">
+          <h3>Customers</h3>
+          <div id="customerList"></div>
+        </div>
+      </section>
+
+      <!-- COOKED SOFTWARES -->
+      <section class="section" id="sec-cooked">
+        <div class="panel">
+          <h3>Save a Software You've Built</h3>
+          <div class="form-grid">
+            <div><label>Software Name</label><input type="text" id="softName" placeholder="e.g. Rahmath POS v1"/></div>
+            <div><label>Tech Stack</label><input type="text" id="softTech" placeholder="e.g. HTML, JS, PHP, MySQL"/></div>
+            <div><label>Status</label>
+              <select id="softStatus"><option value="live">Live / Delivered</option><option value="dev">In Development</option><option value="plan">Planned</option></select>
+            </div>
+            <div><label>Link / Repo (optional)</label><input type="text" id="softLink" placeholder="https://..."/></div>
+          </div>
+          <div class="form-grid single" style="margin-top:12px;">
+            <div><label>Description</label><textarea id="softDesc" placeholder="What does this software do?"></textarea></div>
+          </div>
+          <p class="empty" style="text-align:left;padding:0;margin:10px 0 0;font-size:12px;">Note: file uploads aren't supported here — save the details and a link to where the software is hosted (Drive, GitHub, etc.), and it'll stay saved for you.</p>
+          <button class="btn btn-gold" style="margin-top:12px;" onclick="addSoftware()">+ Save Software</button>
+        </div>
+        <div class="panel">
+          <h3>Your Cooked Softwares</h3>
+          <div class="soft-grid" id="softwareList"></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="section" id="sec-settings">
+        <div class="panel">
+          <h3>Business Settings</h3>
+          <div class="form-grid">
+            <div><label>Business Name</label><input type="text" id="setBizName" placeholder="Rahmath IT Solution"/></div>
+            <div><label>Currency</label><input type="text" id="setCurrency" placeholder="Rs."/></div>
+            <div><label>Phone</label><input type="text" id="setPhone" placeholder="07X XXX XXXX"/></div>
+            <div><label>Address</label><input type="text" id="setAddress" placeholder="City, Country"/></div>
+          </div>
+          <button class="btn btn-gold" style="margin-top:14px;" onclick="saveSettings()">Save Settings</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- STATE ---------------- */
+let DATA = { inventory: [], customers: [], bills: [], softwares: [], settings: {} };
+let cart = [];
+
+/* ---------------- STORAGE HELPERS ---------------- */
+async function loadAll(){
+  const keys = ['inventory','customers','bills','softwares','settings'];
+  for(const k of keys){
+    try{
+      const r = await window.storage.get(k, false);
+      DATA[k] = r && r.value ? JSON.parse(r.value) : (k==='settings' ? {} : []);
+    }catch(e){
+      DATA[k] = (k==='settings') ? {} : [];
+    }
+  }
+}
+async function save(key){
+  try{
+    await window.storage.set(key, JSON.stringify(DATA[key]), false);
+  }catch(e){ console.error('save failed', key, e); }
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(window._tt);
+  window._tt = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function money(n){ return 'Rs. ' + Number(n||0).toLocaleString('en-LK',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+/* ---------------- LOGIN ---------------- */
+document.getElementById('loginForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value.trim();
+  const err = document.getElementById('loginErr');
+  if(!u || !p){ err.textContent = 'Enter username and password'; return; }
+  err.textContent = '';
+  document.getElementById('loginScreen').style.opacity = '0';
+  setTimeout(async ()=>{
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').classList.add('active');
+    document.getElementById('avatarInit').textContent = u.slice(0,2).toUpperCase();
+    await loadAll();
+    renderAll();
+  }, 400);
+});
+
+/* ---------------- NAV ---------------- */
+const titles = {
+  dashboard:['Dashboard','Overview of your business'],
+  today:["Today","Today's activity at a glance"],
+  billing:['Billing','Create and manage bills'],
+  inventory:['Inventory','Manage your products & stock'],
+  report:['Report','Sales performance'],
+  customer:['Customer','Manage your customers'],
+  cooked:['Cooked Softwares','Your saved software projects'],
+  settings:['Settings','Business preferences']
+};
+document.getElementById('navList').addEventListener('click', function(e){
+  const item = e.target.closest('.nav-item');
+  if(!item) return;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  item.classList.add('active');
+  const sec = item.dataset.sec;
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+sec).classList.add('active');
+  document.getElementById('pageTitle').textContent = titles[sec][0];
+  document.getElementById('pageSub').textContent = titles[sec][1];
+  document.getElementById('sidebar').classList.remove('open');
+});
+document.getElementById('menuBtn').addEventListener('click', ()=> document.getElementById('sidebar').classList.toggle('open'));
+document.getElementById('logoutBtn').addEventListener('click', function(){
+  document.getElementById('app').classList.remove('active');
+  const ls = document.getElementById('loginScreen');
+  ls.style.display = 'flex';
+  requestAnimationFrame(()=> ls.style.opacity = '1');
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+});
+
+/* ---------------- BILLING ---------------- */
+function addCartItem(){
+  const name = document.getElementById('billItemName').value.trim();
+  const qty = parseFloat(document.getElementById('billItemQty').value) || 1;
+  const price = parseFloat(document.getElementById('billItemPrice').value) || 0;
+  if(!name){ toast('Enter item name'); return; }
+  cart.push({name, qty, price});
+  document.getElementById('billItemName').value='';
+  document.getElementById('billItemQty').value='1';
+  document.getElementById('billItemPrice').value='';
+  renderCart();
+}
+function removeCartItem(i){ cart.splice(i,1); renderCart(); }
+function renderCart(){
+  const el = document.getElementById('cartList');
+  el.innerHTML = cart.length ? cart.map((c,i)=>`
+    <div class="cart-row">
+      <span>${c.name} × ${c.qty}</span>
+      <span>${money(c.qty*c.price)} <span class="rm" onclick="removeCartItem(${i})">✕</span></span>
+    </div>`).join('') : '<div class="empty">No items added yet</div>';
+  const total = cart.reduce((s,c)=>s+c.qty*c.price,0);
+  document.getElementById('cartTotal').textContent = money(total);
+}
+async function saveBill(){
+  if(!cart.length){ toast('Add at least one item'); return; }
+  const customer = document.getElementById('billCustomer').value.trim() || 'Walk-in customer';
+  const total = cart.reduce((s,c)=>s+c.qty*c.price,0);
+  const bill = { id: uid(), customer, items:[...cart], total, date: todayStr(), time: new Date().toLocaleTimeString() };
+  DATA.bills.unshift(bill);
+  cart.forEach(ci=>{
+    const inv = DATA.inventory.find(p=>p.name.toLowerCase()===ci.name.toLowerCase());
+    if(inv) inv.stock = Math.max(0, inv.stock - ci.qty);
+  });
+  await save('bills'); await save('inventory');
+  cart = []; document.getElementById('billCustomer').value='';
+  renderCart(); renderBilling(); renderDashboard(); renderToday(); renderInventory(); renderReport();
+  toast('Bill saved');
+}
+function renderBilling(){
+  const el = document.getElementById('allBillsList');
+  el.innerHTML = DATA.bills.length ? `<table><thead><tr><th>Customer</th><th>Items</th><th>Total</th><th>Date</th></tr></thead><tbody>${
+    DATA.bills.map(b=>`<tr><td>${b.customer}</td><td>${b.items.length}</td><td>${money(b.total)}</td><td>${b.date}</td></tr>`).join('')
+  }</tbody></table>` : '<div class="empty">No bills yet</div>';
+}
+
+/* ---------------- INVENTORY ---------------- */
+async function addInventory(){
+  const name = document.getElementById('invName').value.trim();
+  const category = document.getElementById('invCategory').value.trim() || 'General';
+  const stock = parseFloat(document.getElementById('invStock').value) || 0;
+  const price = parseFloat(document.getElementById('invPrice').value) || 0;
+  if(!name){ toast('Enter product name'); return; }
+  DATA.inventory.unshift({id:uid(), name, category, stock, price});
+  await save('inventory');
+  ['invName','invCategory','invStock','invPrice'].forEach(id=>document.getElementById(id).value='');
+  renderInventory(); renderDashboard(); renderToday();
+  toast('Product added');
+}
+async function deleteInventory(id){
+  DATA.inventory = DATA.inventory.filter(p=>p.id!==id);
+  await save('inventory'); renderInventory(); renderDashboard(); renderToday();
+}
+function renderInventory(){
+  const el = document.getElementById('inventoryList');
+  el.innerHTML = DATA.inventory.length ? `<table><thead><tr><th>Product</th><th>Category</th><th>Stock</th><th>Price</th><th></th></tr></thead><tbody>${
+    DATA.inventory.map(p=>`<tr><td>${p.name}</td><td>${p.category}</td><td><span class="badge ${p.stock<=5?'low':'ok'}">${p.stock}</span></td><td>${money(p.price)}</td><td><span class="btn btn-sm btn-danger" onclick="deleteInventory('${p.id}')">Delete</span></td></tr>`).join('')
+  }</tbody></table>` : '<div class="empty">No products yet</div>';
+}
+
+/* ---------------- CUSTOMERS ---------------- */
+async function addCustomer(){
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const email = document.getElementById('custEmail').value.trim();
+  if(!name){ toast('Enter customer name'); return; }
+  DATA.customers.unshift({id:uid(), name, phone, email, joined: todayStr()});
+  await save('customers');
+  ['custName','custPhone','custEmail'].forEach(id=>document.getElementById(id).value='');
+  renderCustomers(); renderDashboard();
+  toast('Customer added');
+}
+async function deleteCustomer(id){
+  DATA.customers = DATA.customers.filter(c=>c.id!==id);
+  await save('customers'); renderCustomers(); renderDashboard();
+}
+function renderCustomers(){
+  const el = document.getElementById('customerList');
+  el.innerHTML = DATA.customers.length ? `<table><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th></th></tr></thead><tbody>${
+    DATA.customers.map(c=>`<tr><td>${c.name}</td><td>${c.phone||'—'}</td><td>${c.email||'—'}</td><td><span class="btn btn-sm btn-danger" onclick="deleteCustomer('${c.id}')">Delete</span></td></tr>`).join('')
+  }</tbody></table>` : '<div class="empty">No customers yet</div>';
+}
+
+/* ---------------- COOKED SOFTWARES ---------------- */
+async function addSoftware(){
+  const name = document.getElementById('softName').value.trim();
+  const tech = document.getElementById('softTech').value.trim();
+  const status = document.getElementById('softStatus').value;
+  const link = document.getElementById('softLink').value.trim();
+  const description = document.getElementById('softDesc').value.trim();
+  if(!name){ toast('Enter software name'); return; }
+  DATA.softwares.unshift({id:uid(), name, tech, status, link, description, saved: todayStr()});
+  await save('softwares');
+  ['softName','softTech','softLink','softDesc'].forEach(id=>document.getElementById(id).value='');
+  renderSoftwares();
+  toast('Software saved');
+}
+async function deleteSoftware(id){
+  DATA.softwares = DATA.softwares.filter(s=>s.id!==id);
+  await save('softwares'); renderSoftwares();
+}
+function renderSoftwares(){
+  const el = document.getElementById('softwareList');
+  const badge = {live:'live', dev:'dev', plan:'plan'};
+  const labelMap = {live:'Live', dev:'In Dev', plan:'Planned'};
+  el.innerHTML = DATA.softwares.length ? DATA.softwares.map(s=>`
+    <div class="soft-card">
+      <div class="top">
+        <div><h4>${s.name}</h4><div class="tech">${s.tech||'—'}</div></div>
+        <span class="badge ${badge[s.status]||'plan'}">${labelMap[s.status]||'Planned'}</span>
+      </div>
+      <p>${s.description || 'No description added.'}</p>
+      ${s.link ? `<a href="${s.link}" target="_blank" style="font-size:12px;color:var(--accent);">${s.link}</a>` : ''}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+        <span style="font-size:11px;color:var(--ink-dim);">Saved ${s.saved}</span>
+        <span class="btn btn-sm btn-danger" onclick="deleteSoftware('${s.id}')">Delete</span>
+      </div>
+    </div>`).join('') : '<div class="empty">No software saved yet — add your first one above.</div>';
+}
+
+/* ---------------- SETTINGS ---------------- */
+async function saveSettings(){
+  DATA.settings = {
+    bizName: document.getElementById('setBizName').value.trim(),
+    currency: document.getElementById('setCurrency').value.trim() || 'Rs.',
+    phone: document.getElementById('setPhone').value.trim(),
+    address: document.getElementById('setAddress').value.trim()
+  };
+  await save('settings');
+  toast('Settings saved');
+}
+function renderSettings(){
+  const s = DATA.settings || {};
+  document.getElementById('setBizName').value = s.bizName || '';
+  document.getElementById('setCurrency').value = s.currency || '';
+  document.getElementById('setPhone').value = s.phone || '';
+  document.getElementById('setAddress').value = s.address || '';
+}
+
+/* ---------------- DASHBOARD / TODAY / REPORT ---------------- */
+function renderDashboard(){
+  const totalSales = DATA.bills.reduce((s,b)=>s+b.total,0);
+  document.getElementById('dashTotalSales').textContent = money(totalSales);
+  document.getElementById('dashTotalBills').textContent = DATA.bills.length;
+  document.getElementById('dashTotalProducts').textContent = DATA.inventory.length;
+  document.getElementById('dashTotalCustomers').textContent = DATA.customers.length;
+  const el = document.getElementById('dashRecentBills');
+  const recent = DATA.bills.slice(0,5);
+  el.innerHTML = recent.length ? `<table><thead><tr><th>Customer</th><th>Total</th><th>Date</th></tr></thead><tbody>${
+    recent.map(b=>`<tr><td>${b.customer}</td><td>${money(b.total)}</td><td>${b.date}</td></tr>`).join('')
+  }</tbody></table>` : '<div class="empty">No bills yet</div>';
+}
+function renderToday(){
+  const t = todayStr();
+  const todays = DATA.bills.filter(b=>b.date===t);
+  const sales = todays.reduce((s,b)=>s+b.total,0);
+  document.getElementById('todaySales').textContent = money(sales);
+  document.getElementById('todayBillsCount').textContent = todays.length;
+  document.getElementById('todayLowStock').textContent = DATA.inventory.filter(p=>p.stock<=5).length;
+  const el = document.getElementById('todayBillsList');
+  el.innerHTML = todays.length ? `<table><thead><tr><th>Customer</th><th>Items</th><th>Total</th><th>Time</th></tr></thead><tbody>${
+    todays.map(b=>`<tr><td>${b.customer}</td><td>${b.items.length}</td><td>${money(b.total)}</td><td>${b.time||''}</td></tr>`).join('')
+  }</tbody></table>` : '<div class="empty">No bills today yet</div>';
+}
+function renderReport(){
+  const days = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    days.push(d.toISOString().slice(0,10));
+  }
+  const totals = days.map(d => DATA.bills.filter(b=>b.date===d).reduce((s,b)=>s+b.total,0));
+  const max = Math.max(...totals, 1);
+  const el = document.getElementById('reportBars');
+  el.innerHTML = days.map((d,i)=>{
+    const h = Math.max(4, Math.round((totals[i]/max)*150));
+    const lbl = new Date(d).toLocaleDateString('en-GB',{weekday:'short'});
+    return `<div class="bar-col"><div class="bv">${totals[i]?Math.round(totals[i]):''}</div><div class="bar" style="height:${h}px"></div><div class="bl">${lbl}</div></div>`;
+  }).join('');
+  const totalAll = DATA.bills.reduce((s,b)=>s+b.total,0);
+  document.getElementById('repAvgBill').textContent = money(DATA.bills.length ? totalAll/DATA.bills.length : 0);
+  const bestIdx = totals.indexOf(Math.max(...totals));
+  document.getElementById('repBestDay').textContent = totals[bestIdx] ? new Date(days[bestIdx]).toLocaleDateString('en-GB',{weekday:'long'}) : '—';
+  const itemsSold = DATA.bills.reduce((s,b)=>s + b.items.reduce((ss,it)=>ss+Number(it.qty||0),0), 0);
+  document.getElementById('repItemsSold').textContent = itemsSold;
+}
+
+function renderAll(){
+  renderDashboard(); renderToday(); renderBilling(); renderInventory();
+  renderCustomers(); renderSoftwares(); renderSettings(); renderReport(); renderCart();
+}
+</script>
+</body>
+</html>
