@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAHMATH IT SOLUTION — POS & Business Suite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brick-1:#0d1b30;
+    --brick-2:#132a4d;
+    --brick-mortar:#0a1424;
+    --lamp-core:#fff3d6;
+    --lamp-glow:#ffcf7a;
+    --lamp-glow-soft:#ffb84d;
+    --ink:#eaf1ff;
+    --ink-dim:#b7c6e6;
+    --glass:rgba(18,32,58,0.42);
+    --glass-border:rgba(255,214,150,0.22);
+    --accent:#ffd88a;
+    --accent-soft:rgba(255,216,138,0.15);
+    --white:#ffffff;
+    --success:#7dffa3;
+    --danger:#ff8b8b;
+    --sidebar-w:260px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html,body{
+    height:100%;
+    background:#05070d;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    overflow-x:hidden;
+  }
+
+  /* ========== SHARED STAGE / BRICK BG ========== */
+  .stage{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% 0%, rgba(255,184,77,0.06), transparent 60%),
+      repeating-linear-gradient(0deg, var(--brick-mortar) 0px, var(--brick-mortar) 3px, transparent 3px, transparent 42px),
+      repeating-linear-gradient(90deg, var(--brick-mortar) 0px, var(--brick-mortar) 3px, transparent 3px, transparent 84px),
+      linear-gradient(180deg, var(--brick-1) 0%, var(--brick-2) 55%, var(--brick-1) 100%);
+    background-size: 100% 100%, 84px 42px, 84px 42px, 100% 100%;
+  }
+  .stage::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background: repeating-linear-gradient(90deg, var(--brick-mortar) 0px, var(--brick-mortar) 3px, transparent 3px, transparent 84px);
+    background-position: 42px 42px;
+    background-size: 84px 84px;
+    opacity:0.9;
+    pointer-events:none;
+  }
+  .noise{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:0.045;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ========== LOGIN ========== */
+  #login-view{ display:flex; }
+  #login-view.hidden{ display:none; }
+
+  .brand{
+    position:absolute;
+    top:8%;
+    left:50%;
+    transform:translateX(-50%);
+    text-align:center;
+    z-index:5;
+    opacity:0;
+    animation: brand-drop 1s cubic-bezier(.2,.9,.25,1) 0.25s forwards;
+  }
+  @keyframes brand-drop{
+    from{opacity:0; transform:translate(-50%,-18px);}
+    to{opacity:1; transform:translate(-50%,0);}
+  }
+  .brand-eyebrow{
+    font-size:11px;
+    letter-spacing:0.42em;
+    color:var(--ink-dim);
+    text-transform:uppercase;
+    margin-bottom:6px;
+    opacity:0.75;
+  }
+  .brand-title{
+    font-family:'Baloo 2',sans-serif;
+    font-weight:800;
+    font-size:clamp(26px,5.2vw,44px);
+    letter-spacing:0.03em;
+    color:var(--white);
+    text-shadow:0 0 18px rgba(255,207,122,0.35), 0 0 46px rgba(255,184,77,0.15);
+  }
+  .brand-title .accent{ color:var(--accent); }
+
+  .rig{
+    position:absolute;
+    top:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:200px;
+    z-index:4;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .cord{
+    width:3px;
+    height:58px;
+    background:linear-gradient(180deg, rgba(0,0,0,0.6), #1a1a1a);
+    transform-origin:top center;
+    animation:sway 4.5s ease-in-out infinite;
+  }
+  @keyframes sway{
+    0%,100%{transform:rotate(-1.4deg);}
+    50%{transform:rotate(1.4deg);}
+  }
+  .fixture-wrap{
+    transform-origin:top center;
+    animation:sway 4.5s ease-in-out infinite;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .fixture{
+    width:120px;height:16px;
+    background:linear-gradient(180deg,#2a2f3a,#12151b);
+    border-radius:3px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.5);
+  }
+  .shade{
+    width:0;height:0;
+    border-left:64px solid transparent;
+    border-right:64px solid transparent;
+    border-top:26px solid #171a22;
+    margin-top:-2px;
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,0.45));
+  }
+  .bulb{
+    width:14px;height:14px;
+    border-radius:50%;
+    background:radial-gradient(circle at 50% 40%, var(--lamp-core), var(--lamp-glow-soft) 70%);
+    margin-top:2px;
+    box-shadow:0 0 14px 4px var(--lamp-glow), 0 0 40px 14px rgba(255,184,77,0.5);
+    animation:flicker 3.2s ease-in-out infinite;
+  }
+  @keyframes flicker{
+    0%,100%{opacity:1; box-shadow:0 0 14px 4px var(--lamp-glow),0 0 40px 14px rgba(255,184,77,0.5);}
+    45%{opacity:0.94; box-shadow:0 0 12px 3px var(--lamp-glow),0 0 32px 10px rgba(255,184,77,0.42);}
+    52%{opacity:1; box-shadow:0 0 16px 5px var(--lamp-glow),0 0 46px 16px rgba(255,184,77,0.55);}
+  }
+  .light-cone{
+    position:absolute;
+    top:140px;
+    left:50%;
+    width:640px;height:520px;
+    transform:translateX(-50%);
+    background:radial-gradient(ellipse 260px 340px at 50% 0%, rgba(255,224,160,0.55), rgba(255,196,110,0.22) 38%, transparent 70%);
+    z-index:3;
+    pointer-events:none;
+    animation:glow-breathe 3.2s ease-in-out infinite;
+    mix-blend-mode:screen;
+  }
+  @keyframes glow-breathe{
+    0%,100%{opacity:0.85;}
+    50%{opacity:1;}
+  }
+
+  .card{
+    position:relative;
+    z-index:6;
+    width:100%;
+    max-width:400px;
+    margin-top:210px;
+    padding:40px 34px 30px;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:22px;
+    backdrop-filter:blur(18px) saturate(140%);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+    opacity:0;
+    transform:translateY(36px) scale(0.96);
+    animation:card-in 0.95s cubic-bezier(.2,.9,.25,1) 0.75s forwards;
+  }
+  @keyframes card-in{
+    to{opacity:1; transform:translateY(0) scale(1);}
+  }
+  .card h1{
+    font-family:'Baloo 2',sans-serif;
+    font-weight:700;
+    font-size:32px;
+    color:var(--white);
+    text-align:center;
+    margin-bottom:28px;
+  }
+  .field{ position:relative; margin-bottom:18px; }
+  .field input{
+    width:100%;
+    padding:15px 46px 15px 18px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,0.18);
+    background:rgba(255,255,255,0.06);
+    color:var(--white);
+    font-size:15px;
+    font-family:'Inter',sans-serif;
+    outline:none;
+    transition:border-color .25s, box-shadow .25s, background .25s;
+  }
+  .field input::placeholder{ color:rgba(234,241,255,0.55); }
+  .field input:focus{
+    border-color:var(--accent);
+    background:rgba(255,255,255,0.09);
+    box-shadow:0 0 0 4px rgba(255,216,138,0.14), 0 0 20px rgba(255,184,77,0.18);
+  }
+  .field .icon{
+    position:absolute; right:16px; top:50%;
+    transform:translateY(-50%);
+    width:18px;height:18px;
+    color:rgba(234,241,255,0.75);
+    pointer-events:none;
+    transition:color .25s;
+  }
+  .field input:focus ~ .icon{ color:var(--accent); }
+
+  .row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:4px 0 22px;
+    font-size:13px;
+  }
+  .remember{
+    display:flex;align-items:center;gap:8px;
+    color:var(--ink-dim);cursor:pointer;user-select:none;
+  }
+  .remember input{
+    appearance:none;-webkit-appearance:none;
+    width:15px;height:15px;border-radius:4px;
+    border:1.4px solid rgba(255,255,255,0.35);
+    background:rgba(255,255,255,0.05);
+    cursor:pointer;position:relative;
+    transition:background .2s, border-color .2s;
+  }
+  .remember input:checked{
+    background:var(--accent);border-color:var(--accent);
+  }
+  .remember input:checked::after{
+    content:"";
+    position:absolute;left:4px;top:1px;
+    width:4px;height:8px;
+    border:solid #1a1200;
+    border-width:0 2px 2px 0;
+    transform:rotate(40deg);
+  }
+  .forgot{
+    color:var(--accent);text-decoration:none;font-weight:500;
+    transition:opacity .2s;
+  }
+  .forgot:hover{ opacity:0.75; }
+
+  .btn-login{
+    width:100%;padding:15px;border:none;border-radius:14px;
+    background:linear-gradient(180deg,#ffffff,#f2f2f2);
+    color:#111;font-weight:700;font-size:15.5px;
+    font-family:'Inter',sans-serif;cursor:pointer;
+    position:relative;overflow:hidden;
+    transition:transform .18s, box-shadow .25s;
+    box-shadow:0 8px 22px rgba(0,0,0,0.28);
+  }
+  .btn-login:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 28px rgba(255,196,110,0.3), 0 4px 14px rgba(0,0,0,0.3);
+  }
+  .btn-login:active{ transform:translateY(0); }
+  .btn-login .shine{
+    position:absolute;top:0;left:-60%;
+    width:40%;height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.7), transparent);
+    transform:skewX(-20deg);
+    animation:shine-sweep 3.4s ease-in-out infinite;
+  }
+  @keyframes shine-sweep{
+    0%{left:-60%;} 35%{left:130%;} 100%{left:130%;}
+  }
+  .switch{
+    text-align:center;margin-top:18px;
+    font-size:13.5px;color:var(--ink-dim);
+  }
+  .switch a{
+    color:var(--white);font-weight:700;text-decoration:none;
+    border-bottom:1px solid rgba(255,255,255,0.4);
+    transition:color .2s, border-color .2s;
+  }
+  .switch a:hover{ color:var(--accent); border-color:var(--accent); }
+  .tag{
+    text-align:center;margin-top:22px;
+    font-size:11px;letter-spacing:0.28em;text-transform:uppercase;
+    color:rgba(183,198,230,0.45);
+    opacity:0;
+    animation:brand-drop 1s ease 1.35s forwards;
+  }
+  .login-error{
+    display:none;
+    background:rgba(255,100,100,0.15);
+    border:1px solid rgba(255,140,140,0.35);
+    color:#ffb0b0;
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:13px;
+    margin-bottom:16px;
+    text-align:center;
+  }
+  .login-error.show{ display:block; animation:shake 0.4s ease; }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-6px);}
+    75%{transform:translateX(6px);}
+  }
+
+  /* ========== APP SHELL ========== */
+  #app-view{
+    display:none;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 800px 400px at 20% 0%, rgba(255,184,77,0.04), transparent 50%),
+      repeating-linear-gradient(0deg, var(--brick-mortar) 0px, var(--brick-mortar) 3px, transparent 3px, transparent 42px),
+      repeating-linear-gradient(90deg, var(--brick-mortar) 0px, var(--brick-mortar) 3px, transparent 3px, transparent 84px),
+      linear-gradient(180deg, var(--brick-1) 0%, var(--brick-2) 50%, var(--brick-1) 100%);
+    background-size:100% 100%, 84px 42px, 84px 42px, 100% 100%;
+  }
+  #app-view.visible{ display:flex; }
+  #app-view::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:repeating-linear-gradient(90deg, var(--brick-mortar) 0px, var(--brick-mortar) 3px, transparent 3px, transparent 84px);
+    background-position:42px 42px;
+    background-size:84px 84px;
+    opacity:0.85;
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* Sidebar */
+  .sidebar{
+    position:fixed;
+    left:0;top:0;bottom:0;
+    width:var(--sidebar-w);
+    z-index:20;
+    background:rgba(10,18,34,0.92);
+    border-right:1px solid var(--glass-border);
+    backdrop-filter:blur(20px);
+    display:flex;
+    flex-direction:column;
+    padding:20px 14px;
+    transform:translateX(0);
+    transition:transform .35s cubic-bezier(.2,.9,.25,1);
+  }
+  .sidebar-brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:8px 10px 22px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+    margin-bottom:16px;
+  }
+  .sidebar-logo{
+    width:40px;height:40px;
+    border-radius:12px;
+    background:linear-gradient(135deg, var(--accent), #ffb84d);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Baloo 2',sans-serif;
+    font-weight:800;font-size:18px;color:#1a1200;
+    box-shadow:0 0 20px rgba(255,184,77,0.4);
+  }
+  .sidebar-brand-text h2{
+    font-family:'Baloo 2',sans-serif;
+    font-size:15px;font-weight:700;color:var(--white);
+    line-height:1.2;
+  }
+  .sidebar-brand-text span{
+    font-size:10px;letter-spacing:0.12em;
+    color:var(--ink-dim);text-transform:uppercase;
+  }
+  .nav-list{ list-style:none; flex:1; overflow-y:auto; }
+  .nav-item{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 14px;
+    border-radius:12px;
+    color:var(--ink-dim);
+    font-size:14px;font-weight:500;
+    cursor:pointer;
+    transition:all .22s ease;
+    margin-bottom:4px;
+    border:1px solid transparent;
+  }
+  .nav-item:hover{
+    background:rgba(255,216,138,0.08);
+    color:var(--white);
+  }
+  .nav-item.active{
+    background:var(--accent-soft);
+    color:var(--accent);
+    border-color:rgba(255,216,138,0.25);
+    box-shadow:0 0 20px rgba(255,184,77,0.12);
+  }
+  .nav-item svg{ width:20px;height:20px; flex-shrink:0; }
+  .sidebar-footer{
+    padding-top:14px;
+    border-top:1px solid rgba(255,255,255,0.08);
+  }
+  .user-chip{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.04);
+  }
+  .user-avatar{
+    width:36px;height:36px;border-radius:10px;
+    background:linear-gradient(135deg,#3a4a6b,#1e2a45);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:14px;color:var(--accent);
+  }
+  .user-info{ flex:1; min-width:0; }
+  .user-info strong{ display:block; font-size:13px; color:var(--white); }
+  .user-info span{ font-size:11px; color:var(--ink-dim); }
+  .btn-logout{
+    background:none;border:none;cursor:pointer;
+    color:var(--ink-dim);padding:6px;border-radius:8px;
+    transition:color .2s, background .2s;
+  }
+  .btn-logout:hover{ color:var(--danger); background:rgba(255,100,100,0.1); }
+
+  /* Main content */
+  .main{
+    margin-left:var(--sidebar-w);
+    flex:1;
+    min-height:100vh;
+    position:relative;
+    z-index:1;
+    padding:28px 32px 40px;
+  }
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:28px;
+    gap:16px;
+  }
+  .page-title{
+    font-family:'Baloo 2',sans-serif;
+    font-size:28px;font-weight:700;color:var(--white);
+  }
+  .page-sub{ font-size:13px; color:var(--ink-dim); margin-top:2px; }
+  .topbar-actions{ display:flex; align-items:center; gap:12px; }
+  .search-box{
+    display:flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:12px;
+    padding:10px 14px;
+    min-width:220px;
+  }
+  .search-box input{
+    background:none;border:none;outline:none;
+    color:var(--white);font-size:13px;width:100%;
+  }
+  .search-box input::placeholder{ color:rgba(234,241,255,0.4); }
+  .icon-btn{
+    width:40px;height:40px;border-radius:12px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.12);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--ink-dim);cursor:pointer;
+    transition:all .2s;
+  }
+  .icon-btn:hover{
+    background:var(--accent-soft);
+    color:var(--accent);
+    border-color:rgba(255,216,138,0.3);
+  }
+
+  /* Panels */
+  .panel{ display:none; animation:panel-in 0.4s ease both; }
+  .panel.active{ display:block; }
+  @keyframes panel-in{
+    from{opacity:0; transform:translateY(12px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  /* Cards / Stats */
+  .stats-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+    gap:18px;
+    margin-bottom:28px;
+  }
+  .stat-card{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:18px;
+    padding:22px 20px;
+    backdrop-filter:blur(14px);
+    transition:transform .25s, box-shadow .25s;
+  }
+  .stat-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 32px rgba(0,0,0,0.3), 0 0 24px rgba(255,184,77,0.08);
+  }
+  .stat-label{ font-size:12px; color:var(--ink-dim); letter-spacing:0.06em; text-transform:uppercase; margin-bottom:8px; }
+  .stat-value{ font-family:'Baloo 2',sans-serif; font-size:28px; font-weight:700; color:var(--white); }
+  .stat-value.accent{ color:var(--accent); }
+  .stat-change{ font-size:12px; margin-top:6px; }
+  .stat-change.up{ color:var(--success); }
+  .stat-change.down{ color:var(--danger); }
+
+  .glass-card{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:18px;
+    padding:24px;
+    backdrop-filter:blur(14px);
+    margin-bottom:20px;
+  }
+  .glass-card h3{
+    font-family:'Baloo 2',sans-serif;
+    font-size:18px;font-weight:700;color:var(--white);
+    margin-bottom:16px;
+  }
+
+  /* Tables */
+  .data-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13.5px;
+  }
+  .data-table th{
+    text-align:left;
+    padding:12px 14px;
+    color:var(--ink-dim);
+    font-weight:600;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+  }
+  .data-table td{
+    padding:14px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+    color:var(--ink);
+  }
+  .data-table tr:hover td{ background:rgba(255,216,138,0.04); }
+  .badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:600;
+  }
+  .badge.green{ background:rgba(125,255,163,0.15); color:var(--success); }
+  .badge.yellow{ background:rgba(255,216,138,0.15); color:var(--accent); }
+  .badge.red{ background:rgba(255,139,139,0.15); color:var(--danger); }
+
+  /* Forms */
+  .form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:16px;
+  }
+  .form-group label{
+    display:block;
+    font-size:12px;
+    color:var(--ink-dim);
+    margin-bottom:6px;
+    letter-spacing:0.04em;
+  }
+  .form-group input, .form-group select, .form-group textarea{
+    width:100%;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.15);
+    background:rgba(255,255,255,0.05);
+    color:var(--white);
+    font-size:14px;
+    font-family:'Inter',sans-serif;
+    outline:none;
+    transition:border-color .2s, box-shadow .2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(255,216,138,0.12);
+  }
+  .form-group textarea{ min-height:90px; resize:vertical; }
+  .form-group select option{ background:#132a4d; color:#fff; }
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 20px;
+    border-radius:12px;
+    border:none;
+    font-weight:600;font-size:14px;
+    font-family:'Inter',sans-serif;
+    cursor:pointer;
+    transition:transform .15s, box-shadow .2s, background .2s;
+  }
+  .btn:hover{ transform:translateY(-1px); }
+  .btn-primary{
+    background:linear-gradient(180deg,#ffffff,#f0f0f0);
+    color:#111;
+    box-shadow:0 6px 18px rgba(0,0,0,0.25);
+  }
+  .btn-primary:hover{ box-shadow:0 8px 24px rgba(255,196,110,0.25); }
+  .btn-accent{
+    background:linear-gradient(135deg, var(--accent), #ffb84d);
+    color:#1a1200;
+  }
+  .btn-ghost{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.15);
+    color:var(--ink);
+  }
+  .btn-ghost:hover{ background:rgba(255,255,255,0.1); }
+  .btn-danger{
+    background:rgba(255,100,100,0.15);
+    border:1px solid rgba(255,140,140,0.3);
+    color:var(--danger);
+  }
+
+  /* Bill items */
+  .bill-items{ margin:16px 0; }
+  .bill-row{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 1fr auto;
+    gap:10px;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .bill-total{
+    display:flex;
+    justify-content:flex-end;
+    gap:40px;
+    margin-top:20px;
+    padding-top:16px;
+    border-top:1px solid rgba(255,255,255,0.12);
+    font-size:16px;
+  }
+  .bill-total strong{ color:var(--accent); font-size:22px; font-family:'Baloo 2',sans-serif; }
+
+  /* Cooked Softwares */
+  .soft-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+    gap:18px;
+  }
+  .soft-card{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:16px;
+    padding:20px;
+    transition:transform .25s, box-shadow .25s;
+    position:relative;
+  }
+  .soft-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 14px 36px rgba(0,0,0,0.35), 0 0 20px rgba(255,184,77,0.1);
+  }
+  .soft-icon{
+    width:48px;height:48px;
+    border-radius:14px;
+    background:linear-gradient(135deg, rgba(255,216,138,0.2), rgba(255,184,77,0.1));
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;
+    margin-bottom:14px;
+  }
+  .soft-card h4{ font-size:16px; color:var(--white); margin-bottom:6px; }
+  .soft-card p{ font-size:12px; color:var(--ink-dim); margin-bottom:14px; line-height:1.5; }
+  .soft-meta{ font-size:11px; color:rgba(183,198,230,0.5); }
+  .soft-actions{ display:flex; gap:8px; margin-top:14px; }
+  .upload-zone{
+    border:2px dashed rgba(255,216,138,0.35);
+    border-radius:16px;
+    padding:36px 24px;
+    text-align:center;
+    background:rgba(255,216,138,0.04);
+    cursor:pointer;
+    transition:all .25s;
+    margin-bottom:24px;
+  }
+  .upload-zone:hover, .upload-zone.dragover{
+    border-color:var(--accent);
+    background:rgba(255,216,138,0.1);
+  }
+  .upload-zone svg{ width:40px;height:40px; color:var(--accent); margin-bottom:12px; }
+  .upload-zone h4{ color:var(--white); margin-bottom:6px; }
+  .upload-zone p{ font-size:13px; color:var(--ink-dim); }
+
+  /* Today / activity */
+  .activity-list{ list-style:none; }
+  .activity-item{
+    display:flex;gap:14px;align-items:flex-start;
+    padding:14px 0;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+  }
+  .activity-dot{
+    width:10px;height:10px;border-radius:50%;
+    background:var(--accent);
+    margin-top:5px;
+    box-shadow:0 0 10px rgba(255,184,77,0.5);
+    flex-shrink:0;
+  }
+  .activity-item strong{ display:block; font-size:14px; color:var(--white); }
+  .activity-item span{ font-size:12px; color:var(--ink-dim); }
+
+  /* Settings */
+  .settings-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .settings-row:last-child{ border-bottom:none; }
+  .toggle{
+    width:48px;height:26px;
+    background:rgba(255,255,255,0.12);
+    border-radius:20px;
+    position:relative;
+    cursor:pointer;
+    transition:background .25s;
+  }
+  .toggle.on{ background:var(--accent); }
+  .toggle::after{
+    content:"";
+    position:absolute;
+    top:3px;left:3px;
+    width:20px;height:20px;
+    border-radius:50%;
+    background:#fff;
+    transition:transform .25s;
+    box-shadow:0 2px 6px rgba(0,0,0,0.3);
+  }
+  .toggle.on::after{ transform:translateX(22px); }
+
+  /* Mobile */
+  .menu-toggle{
+    display:none;
+    width:42px;height:42px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.12);
+    color:var(--white);
+    align-items:center;justify-content:center;
+    cursor:pointer;
+  }
+  @media (max-width:900px){
+    .sidebar{ transform:translateX(-100%); }
+    .sidebar.open{ transform:translateX(0); }
+    .main{ margin-left:0; padding:20px 16px; }
+    .menu-toggle{ display:flex; }
+    .search-box{ min-width:0; flex:1; }
+    .bill-row{ grid-template-columns:1fr 1fr; gap:8px; }
+  }
+  @media (max-width:480px){
+    .card{ margin-top:190px; padding:32px 22px 24px; }
+    .light-cone{ width:480px; height:400px; top:130px; }
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; }
+  }
+
+  /* Toast */
+  .toast{
+    position:fixed;
+    bottom:28px;right:28px;
+    background:rgba(18,32,58,0.95);
+    border:1px solid var(--glass-border);
+    color:var(--white);
+    padding:14px 20px;
+    border-radius:14px;
+    font-size:14px;
+    box-shadow:0 12px 40px rgba(0,0,0,0.4);
+    z-index:100;
+    opacity:0;
+    transform:translateY(20px);
+    transition:all .35s cubic-bezier(.2,.9,.25,1);
+    pointer-events:none;
+  }
+  .toast.show{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN VIEW ==================== -->
+<div id="login-view" class="stage">
+  <div class="noise"></div>
+
+  <div class="brand">
+    <p class="brand-eyebrow">Point of Sale · Business Software</p>
+    <h1 class="brand-title">RAHMATH <span class="accent">IT</span> SOLUTION</h1>
+  </div>
+
+  <div class="rig">
+    <div class="cord"></div>
+    <div class="fixture-wrap">
+      <div class="fixture"></div>
+      <div class="shade"></div>
+      <div class="bulb"></div>
+    </div>
+  </div>
+  <div class="light-cone"></div>
+
+  <form class="card" id="login-form" autocomplete="off">
+    <h1>Login</h1>
+    <div class="login-error" id="login-error">Invalid username or password</div>
+
+    <div class="field">
+      <input type="text" id="username" placeholder="Username" required value="admin" />
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+
+    <div class="field">
+      <input type="password" id="password" placeholder="Password" required value="admin" />
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+
+    <div class="row">
+      <label class="remember">
+        <input type="checkbox" id="remember" checked />
+        Remember me
+      </label>
+      <a href="#" class="forgot">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="btn-login">
+      <span class="shine"></span>
+      Login
+    </button>
+
+    <p class="switch">Don't have an account? <a href="#">Register</a></p>
+  </form>
+
+  <p class="tag">POS · Billing · Business Management Software</p>
+</div>
+
+<!-- ==================== APP VIEW ==================== -->
+<div id="app-view">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">R</div>
+      <div class="sidebar-brand-text">
+        <h2>RAHMATH IT</h2>
+        <span>Solution</span>
+      </div>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item active" data-panel="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Dashboard
+      </li>
+      <li class="nav-item" data-panel="bill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Bill
+      </li>
+      <li class="nav-item" data-panel="inventory">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        Inventory
+      </li>
+      <li class="nav-item" data-panel="report">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Report
+      </li>
+      <li class="nav-item" data-panel="customer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Customer
+      </li>
+      <li class="nav-item" data-panel="today">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Today
+      </li>
+      <li class="nav-item" data-panel="cooked">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Cooked Softwares
+      </li>
+      <li class="nav-item" data-panel="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar">A</div>
+        <div class="user-info">
+          <strong>Admin</strong>
+          <span>Owner</span>
+        </div>
+        <button class="btn-logout" id="btn-logout" title="Logout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="menu-toggle" id="menu-toggle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div>
+          <div class="page-title" id="page-title">Dashboard</div>
+          <div class="page-sub" id="page-sub">Welcome back · Overview of your business</div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search..." id="global-search" />
+        </div>
+        <button class="icon-btn" title="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section class="panel active" id="panel-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Today's Sales</div>
+          <div class="stat-value accent">₹24,850</div>
+          <div class="stat-change up">↑ 12% from yesterday</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Orders</div>
+          <div class="stat-value">47</div>
+          <div class="stat-change up">↑ 8 new</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Customers</div>
+          <div class="stat-value">1,284</div>
+          <div class="stat-change up">↑ 23 this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Low Stock</div>
+          <div class="stat-value" style="color:var(--danger)">6</div>
+          <div class="stat-change down">Needs attention</div>
+        </div>
+      </div>
+      <div class="glass-card">
+        <h3>Recent Transactions</h3>
+        <table class="data-table">
+          <thead>
+            <tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Status</th><th>Time</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>#INV-1042</td><td>Kumar Stores</td><td>₹3,450</td><td><span class="badge green">Paid</span></td><td>10:42 AM</td></tr>
+            <tr><td>#INV-1041</td><td>Anitha Traders</td><td>₹1,890</td><td><span class="badge green">Paid</span></td><td>09:15 AM</td></tr>
+            <tr><td>#INV-1040</td><td>Walk-in</td><td>₹650</td><td><span class="badge yellow">Pending</span></td><td>08:50 AM</td></tr>
+            <tr><td>#INV-1039</td><td>Senthil Agencies</td><td>₹8,200</td><td><span class="badge green">Paid</span></td><td>Yesterday</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BILL -->
+    <section class="panel" id="panel-bill">
+      <div class="glass-card">
+        <h3>Create New Bill</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Customer</label>
+            <select id="bill-customer">
+              <option value="">Walk-in Customer</option>
+              <option>Kumar Stores</option>
+              <option>Anitha Traders</option>
+              <option>Senthil Agencies</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Invoice No</label>
+            <input type="text" id="bill-inv" value="INV-1043" readonly />
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="bill-date" />
+          </div>
+        </div>
+        <div class="bill-items" id="bill-items">
+          <div class="bill-row" style="font-size:11px;color:var(--ink-dim);letter-spacing:0.06em;text-transform:uppercase;">
+            <span>Item</span><span>Qty</span><span>Rate</span><span>Amount</span><span></span>
+          </div>
+        </div>
+        <button class="btn btn-ghost" id="add-bill-item" style="margin-bottom:12px;">+ Add Item</button>
+        <div class="bill-total">
+          <div>Subtotal: <span id="bill-sub">₹0</span></div>
+          <div>Total: <strong id="bill-total">₹0</strong></div>
+        </div>
+        <div style="margin-top:20px;display:flex;gap:12px;">
+          <button class="btn btn-primary" id="save-bill">Save & Print</button>
+          <button class="btn btn-ghost" id="clear-bill">Clear</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section class="panel" id="panel-inventory">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+        <h3 style="font-family:'Baloo 2';font-size:18px;color:var(--white);">Stock List</h3>
+        <button class="btn btn-accent" id="add-product-btn">+ Add Product</button>
+      </div>
+      <div class="glass-card">
+        <table class="data-table">
+          <thead>
+            <tr><th>SKU</th><th>Product</th><th>Category</th><th>Stock</th><th>Price</th><th>Status</th></tr>
+          </thead>
+          <tbody id="inventory-body">
+            <tr><td>PRD-001</td><td>Basmati Rice 5kg</td><td>Grocery</td><td>42</td><td>₹480</td><td><span class="badge green">In Stock</span></td></tr>
+            <tr><td>PRD-002</td><td>Sunflower Oil 1L</td><td>Grocery</td><td>18</td><td>₹165</td><td><span class="badge green">In Stock</span></td></tr>
+            <tr><td>PRD-003</td><td>A4 Paper Ream</td><td>Stationery</td><td>5</td><td>₹280</td><td><span class="badge yellow">Low</span></td></tr>
+            <tr><td>PRD-004</td><td>LED Bulb 9W</td><td>Electronics</td><td>0</td><td>₹95</td><td><span class="badge red">Out</span></td></tr>
+            <tr><td>PRD-005</td><td>Notebook 200pg</td><td>Stationery</td><td>120</td><td>₹45</td><td><span class="badge green">In Stock</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- REPORT -->
+    <section class="panel" id="panel-report">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">This Month Sales</div>
+          <div class="stat-value accent">₹3,84,200</div>
+          <div class="stat-change up">↑ 18% vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Profit</div>
+          <div class="stat-value">₹92,450</div>
+          <div class="stat-change up">Margin 24%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Top Product</div>
+          <div class="stat-value" style="font-size:18px;">Basmati Rice</div>
+          <div class="stat-change">312 units sold</div>
+        </div>
+      </div>
+      <div class="glass-card">
+        <h3>Sales by Category</h3>
+        <table class="data-table">
+          <thead><tr><th>Category</th><th>Orders</th><th>Revenue</th><th>Share</th></tr></thead>
+          <tbody>
+            <tr><td>Grocery</td><td>186</td><td>₹1,42,000</td><td>37%</td></tr>
+            <tr><td>Electronics</td><td>64</td><td>₹98,500</td><td>26%</td></tr>
+            <tr><td>Stationery</td><td>112</td><td>₹45,200</td><td>12%</td></tr>
+            <tr><td>Others</td><td>98</td><td>₹98,500</td><td>25%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CUSTOMER -->
+    <section class="panel" id="panel-customer">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+        <h3 style="font-family:'Baloo 2';font-size:18px;color:var(--white);">Customer Directory</h3>
+        <button class="btn btn-accent" id="add-customer-btn">+ Add Customer</button>
+      </div>
+      <div class="glass-card">
+        <table class="data-table">
+          <thead>
+            <tr><th>Name</th><th>Phone</th><th>City</th><th>Total Orders</th><th>Due</th></tr>
+          </thead>
+          <tbody id="customer-body">
+            <tr><td>Kumar Stores</td><td>98765 43210</td><td>Chennai</td><td>48</td><td>₹0</td></tr>
+            <tr><td>Anitha Traders</td><td>87654 32109</td><td>Coimbatore</td><td>32</td><td>₹1,200</td></tr>
+            <tr><td>Senthil Agencies</td><td>76543 21098</td><td>Madurai</td><td>67</td><td>₹0</td></tr>
+            <tr><td>Priya Mart</td><td>65432 10987</td><td>Salem</td><td>15</td><td>₹3,450</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TODAY -->
+    <section class="panel" id="panel-today">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Cash in Hand</div>
+          <div class="stat-value accent">₹18,420</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Bills Today</div>
+          <div class="stat-value">47</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value" style="color:var(--danger)">3</div>
+        </div>
+      </div>
+      <div class="glass-card">
+        <h3>Today's Activity</h3>
+        <ul class="activity-list">
+          <li class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <strong>New bill #INV-1042 created</strong>
+              <span>Kumar Stores · ₹3,450 · 10:42 AM</span>
+            </div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-dot" style="background:var(--success);"></div>
+            <div>
+              <strong>Payment received</strong>
+              <span>Anitha Traders · ₹1,890 · 09:20 AM</span>
+            </div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-dot" style="background:var(--danger);"></div>
+            <div>
+              <strong>Low stock alert</strong>
+              <span>A4 Paper Ream · only 5 left · 08:05 AM</span>
+            </div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <strong>New customer added</strong>
+              <span>Priya Mart · Salem · Yesterday</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- COOKED SOFTWARES -->
+    <section class="panel" id="panel-cooked">
+      <div class="upload-zone" id="upload-zone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <h4>Upload your software</h4>
+        <p>Drag & drop HTML / ZIP / EXE files or click to browse<br>
+          <small style="opacity:0.7">Your softwares are saved locally in this browser</small></p>
+        <input type="file" id="soft-file" multiple accept=".html,.htm,.zip,.exe,.js,.css,.json" style="display:none" />
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="font-family:'Baloo 2';font-size:18px;color:var(--white);">My Softwares</h3>
+        <button class="btn btn-ghost" id="clear-all-soft" style="font-size:12px;">Clear All</button>
+      </div>
+      <div class="soft-grid" id="soft-grid">
+        <!-- filled by JS -->
+      </div>
+      <p id="soft-empty" style="text-align:center;color:var(--ink-dim);padding:40px 0;display:none;">
+        No softwares uploaded yet. Upload your first one above!
+      </p>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="panel" id="panel-settings">
+      <div class="glass-card">
+        <h3>Business Profile</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Business Name</label>
+            <input type="text" value="RAHMATH IT SOLUTION" id="set-biz" />
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" value="+91 98765 43210" id="set-phone" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" value="info@rahmathit.com" id="set-email" />
+          </div>
+          <div class="form-group">
+            <label>GSTIN</label>
+            <input type="text" value="33AAAAA0000A1Z5" id="set-gst" />
+          </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:16px;" id="save-settings">Save Profile</button>
+      </div>
+      <div class="glass-card">
+        <h3>Preferences</h3>
+        <div class="settings-row">
+          <div>
+            <strong style="color:var(--white);">Dark Theme</strong>
+            <div style="font-size:12px;color:var(--ink-dim);">Brick wall & lamp aesthetic</div>
+          </div>
+          <div class="toggle on" id="tog-theme"></div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <strong style="color:var(--white);">Sound Effects</strong>
+            <div style="font-size:12px;color:var(--ink-dim);">Click & notification sounds</div>
+          </div>
+          <div class="toggle" id="tog-sound"></div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <strong style="color:var(--white);">Auto Backup</strong>
+            <div style="font-size:12px;color:var(--ink-dim);">Save data to browser daily</div>
+          </div>
+          <div class="toggle on" id="tog-backup"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== LOGIN ========== */
+const loginView = document.getElementById('login-view');
+const appView = document.getElementById('app-view');
+const loginForm = document.getElementById('login-form');
+const loginError = document.getElementById('login-error');
+
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value;
+  if (user === 'admin' && pass === 'admin') {
+    loginView.classList.add('hidden');
+    appView.classList.add('visible');
+    document.body.style.overflow = 'auto';
+    showToast('Welcome back, Admin!');
+  } else {
+    loginError.classList.add('show');
+    setTimeout(() => loginError.classList.remove('show'), 3000);
+  }
+});
+
+document.getElementById('btn-logout').addEventListener('click', () => {
+  appView.classList.remove('visible');
+  loginView.classList.remove('hidden');
+  document.getElementById('password').value = '';
+});
+
+/* ========== NAVIGATION ========== */
+const titles = {
+  dashboard: ['Dashboard', 'Welcome back · Overview of your business'],
+  bill: ['Bill', 'Create and manage invoices'],
+  inventory: ['Inventory', 'Stock & product management'],
+  report: ['Report', 'Sales analytics & insights'],
+  customer: ['Customer', 'Customer directory & dues'],
+  today: ['Today', 'Live activity for today'],
+  cooked: ['Cooked Softwares', 'Upload & manage your softwares'],
+  settings: ['Settings', 'Business profile & preferences']
+};
+
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    item.classList.add('active');
+    const panel = item.dataset.panel;
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + panel).classList.add('active');
+    document.getElementById('page-title').textContent = titles[panel][0];
+    document.getElementById('page-sub').textContent = titles[panel][1];
+    document.getElementById('sidebar').classList.remove('open');
+  });
+});
+
+document.getElementById('menu-toggle').addEventListener('click', () => {
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+/* ========== BILL ========== */
+document.getElementById('bill-date').valueAsDate = new Date();
+const billItems = document.getElementById('bill-items');
+
+function addBillRow(name = '', qty = 1, rate = 0) {
+  const row = document.createElement('div');
+  row.className = 'bill-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Item name" value="${name}" class="bi-name" style="padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:#fff;width:100%;" />
+    <input type="number" min="1" value="${qty}" class="bi-qty" style="padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:#fff;width:100%;" />
+    <input type="number" min="0" value="${rate}" class="bi-rate" style="padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);color:#fff;width:100%;" />
+    <span class="bi-amt" style="color:var(--accent);font-weight:600;">₹0</span>
+    <button class="btn-ghost" style="padding:6px 10px;border-radius:8px;" onclick="this.parentElement.remove();calcBill();">✕</button>
+  `;
+  billItems.appendChild(row);
+  row.querySelectorAll('input').forEach(inp => inp.addEventListener('input', calcBill));
+  calcBill();
+}
+
+function calcBill() {
+  let total = 0;
+  document.querySelectorAll('.bill-row').forEach(row => {
+    if (!row.querySelector('.bi-qty')) return;
+    const q = parseFloat(row.querySelector('.bi-qty').value) || 0;
+    const r = parseFloat(row.querySelector('.bi-rate').value) || 0;
+    const amt = q * r;
+    row.querySelector('.bi-amt').textContent = '₹' + amt.toLocaleString('en-IN');
+    total += amt;
+  });
+  document.getElementById('bill-sub').textContent = '₹' + total.toLocaleString('en-IN');
+  document.getElementById('bill-total').textContent = '₹' + total.toLocaleString('en-IN');
+}
+
+document.getElementById('add-bill-item').addEventListener('click', () => addBillRow());
+document.getElementById('clear-bill').addEventListener('click', () => {
+  billItems.querySelectorAll('.bill-row').forEach((r, i) => { if (i > 0) r.remove(); });
+  calcBill();
+});
+document.getElementById('save-bill').addEventListener('click', () => {
+  showToast('Bill saved successfully!');
+});
+addBillRow('Basmati Rice 5kg', 2, 480);
+addBillRow('Sunflower Oil 1L', 3, 165);
+
+/* ========== COOKED SOFTWARES (localStorage) ========== */
+const SOFT_KEY = 'rahmath_cooked_softwares';
+
+function loadSoftwares() {
+  try {
+    return JSON.parse(localStorage.getItem(SOFT_KEY) || '[]');
+  } catch { return []; }
+}
+
+function saveSoftwares(list) {
+  localStorage.setItem(SOFT_KEY, JSON.stringify(list));
+  renderSoftwares();
+}
+
+function renderSoftwares() {
+  const list = loadSoftwares();
+  const grid = document.getElementById('soft-grid');
+  const empty = document.getElementById('soft-empty');
+  grid.innerHTML = '';
+  if (list.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.forEach((s, idx) => {
+    const card = document.createElement('div');
+    card.className = 'soft-card';
+    const icon = s.name.match(/\.html?$/i) ? '🌐' : s.name.match(/\.zip$/i) ? '📦' : s.name.match(/\.exe$/i) ? '⚙️' : '📄';
+    card.innerHTML = `
+      <div class="soft-icon">${icon}</div>
+      <h4>${escapeHtml(s.name)}</h4>
+      <p>${escapeHtml(s.desc || 'Uploaded software')}</p>
+      <div class="soft-meta">${formatSize(s.size)} · ${s.date}</div>
+      <div class="soft-actions">
+        <button class="btn btn-ghost" style="padding:8px 12px;font-size:12px;" onclick="downloadSoft(${idx})">Download</button>
+        <button class="btn btn-danger" style="padding:8px 12px;font-size:12px;" onclick="deleteSoft(${idx})">Delete</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function escapeHtml(t) {
+  const d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
+}
+function formatSize(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+  return (b / 1048576).toFixed(1) + ' MB';
+}
+
+function downloadSoft(idx) {
+  const list = loadSoftwares();
+  const s = list[idx];
+  if (!s || !s.data) return;
+  const a = document.createElement('a');
+  a.href = s.data;
+  a.download = s.name;
+  a.click();
+  showToast('Downloading ' + s.name);
+}
+
+function deleteSoft(idx) {
+  const list = loadSoftwares();
+  list.splice(idx, 1);
+  saveSoftwares(list);
+  showToast('Software removed');
+}
+
+document.getElementById('clear-all-soft').addEventListener('click', () => {
+  if (confirm('Remove all uploaded softwares?')) {
+    saveSoftwares([]);
+    showToast('All softwares cleared');
+  }
+});
+
+const uploadZone = document.getElementById('upload-zone');
+const softFile = document.getElementById('soft-file');
+
+uploadZone.addEventListener('click', () => softFile.click());
+uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
+softFile.addEventListener('change', () => handleFiles(softFile.files));
+
+function handleFiles(files) {
+  const list = loadSoftwares();
+  let pending = files.length;
+  if (!pending) return;
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      list.push({
+        name: file.name,
+        size: file.size,
+        date: new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+        desc: 'Uploaded ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+        data: ev.target.result
+      });
+      pending--;
+      if (pending === 0) {
+        saveSoftwares(list);
+        showToast(files.length + ' software(s) uploaded & saved!');
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+renderSoftwares();
+
+/* ========== SETTINGS TOGGLES ========== */
+document.querySelectorAll('.toggle').forEach(tog => {
+  tog.addEventListener('click', () => tog.classList.toggle('on'));
+});
+document.getElementById('save-settings').addEventListener('click', () => {
+  showToast('Settings saved successfully!');
+});
+
+/* ========== TOAST ========== */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ========== DEMO ADD BUTTONS ========== */
+document.getElementById('add-product-btn')?.addEventListener('click', () => showToast('Add product form coming soon'));
+document.getElementById('add-customer-btn')?.addEventListener('click', () => showToast('Add customer form coming soon'));
+</script>
+</body>
+</html>
