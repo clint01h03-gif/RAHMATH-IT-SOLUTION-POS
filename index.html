@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAHMATH IT SOLUTION — POS & Business Suite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ==================== INTRO ==================== -->
+<div id="intro-view">
+  <div class="intro-lamp">
+    <div class="cord"></div>
+    <div class="fixture"></div>
+    <div class="shade"></div>
+    <div class="bulb"></div>
+  </div>
+  <div class="intro-inner">
+    <div class="intro-logo">R</div>
+    <h1 class="intro-title">RAHMATH <span class="accent">IT</span> SOLUTION</h1>
+    <p class="intro-sub">POS · Billing · Business Suite</p>
+    <div class="intro-bar"><div class="intro-bar-fill"></div></div>
+  </div>
+</div>
+
+<!-- ==================== LOGIN VIEW ==================== -->
+<div id="login-view" class="stage">
+  <div class="noise"></div>
+
+  <div class="brand">
+    <p class="brand-eyebrow">Point of Sale · Business Software</p>
+    <h1 class="brand-title">RAHMATH <span class="accent">IT</span> SOLUTION</h1>
+  </div>
+
+  <div class="rig">
+    <div class="cord"></div>
+    <div class="fixture-wrap">
+      <div class="fixture"></div>
+      <div class="shade"></div>
+      <div class="bulb"></div>
+    </div>
+  </div>
+  <div class="light-cone"></div>
+
+  <form class="card" id="login-form" autocomplete="off">
+    <h1>Login</h1>
+    <div class="login-error" id="login-error">Invalid username or password</div>
+
+    <div class="field">
+      <input type="text" id="username" placeholder="Username" required autocomplete="username" />
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+
+    <div class="field">
+      <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+
+    <div class="row">
+      <label class="remember">
+        <input type="checkbox" id="remember" checked />
+        Remember me
+      </label>
+      <a href="#" class="forgot">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="btn-login">
+      <span class="shine"></span>
+      Login
+    </button>
+
+    <p class="switch">Don't have an account? <a href="#">Register</a></p>
+  </form>
+
+  <p class="tag">POS · Billing · Business Management Software</p>
+</div>
+
+<!-- ==================== APP VIEW ==================== -->
+<div id="app-view">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="sidebar-logo">R</div>
+      <div class="sidebar-brand-text">
+        <h2>RAHMATH IT</h2>
+        <span>Solution</span>
+      </div>
+    </div>
+    <ul class="nav-list">
+      <li class="nav-item active" data-panel="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+        Dashboard
+      </li>
+      <li class="nav-item" data-panel="bill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Bill
+      </li>
+      <li class="nav-item" data-panel="inventory">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Services
+      </li>
+      <li class="nav-item" data-panel="report">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Report
+      </li>
+      <li class="nav-item" data-panel="customer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Customer
+      </li>
+      <li class="nav-item" data-panel="today">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Today
+      </li>
+      <li class="nav-item" data-panel="cooked">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Cooked Softwares
+      </li>
+      <li class="nav-item" data-panel="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar">A</div>
+        <div class="user-info">
+          <strong>Admin</strong>
+          <span>Owner</span>
+        </div>
+        <button class="btn-logout" id="btn-logout" title="Logout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="menu-toggle" id="menu-toggle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div>
+          <div class="page-title" id="page-title">Dashboard</div>
+          <div class="page-sub" id="page-sub">Welcome back · Overview of your business</div>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search..." id="global-search" />
+        </div>
+        <button class="icon-btn" title="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section class="panel active" id="panel-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Today's Sales</div>
+          <div class="stat-value accent">₹24,850</div>
+          <div class="stat-change up">↑ 12% from yesterday</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Orders</div>
+          <div class="stat-value">47</div>
+          <div class="stat-change up">↑ 8 new</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Customers</div>
+          <div class="stat-value">1,284</div>
+          <div class="stat-change up">↑ 23 this week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Services</div>
+          <div class="stat-value" style="color:var(--accent)">12</div>
+          <div class="stat-change up">All running</div>
+        </div>
+      </div>
+      <div class="glass-card">
+        <h3>Profit &amp; Loss Overview</h3>
+        <p style="font-size:12px;color:var(--ink-dim);margin:-8px 0 12px;">Last 6 months · animated live chart</p>
+        <div class="chart-wrap">
+          <canvas id="pl-chart" class="chart-canvas" width="900" height="280"></canvas>
+        </div>
+        <div class="chart-legend">
+          <span class="sales"><i></i>Sales</span>
+          <span class="profit"><i></i>Profit</span>
+          <span class="loss"><i></i>Expense / Loss</span>
+        </div>
+      </div>
+      <div class="glass-card">
+        <h3>Recent Transactions</h3>
+        <table class="data-table">
+          <thead>
+            <tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Status</th><th>Time</th></tr>
+          </thead>
+          <tbody id="dash-recent-body">
+            <tr><td colspan="5" style="text-align:center;color:var(--ink-dim);padding:20px;">Save bills to see them here</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BILL -->
+    <section class="panel" id="panel-bill">
+      <div class="glass-card">
+        <h3>Create New Bill</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Customer</label>
+            <select id="bill-customer">
+              <option value="">Walk-in Customer</option>
+              <option>Kumar Stores</option>
+              <option>Anitha Traders</option>
+              <option>Senthil Agencies</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Invoice No</label>
+            <input type="text" id="bill-inv" value="INV-1043" readonly />
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="bill-date" />
+          </div>
+        </div>
+        <div class="bill-items" id="bill-items">
+          <div class="bill-row" style="font-size:11px;color:var(--ink-dim);letter-spacing:0.06em;text-transform:uppercase;">
+            <span>Service / Item</span><span>Qty</span><span>Rate</span><span>Amount</span><span></span>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+          <button type="button" class="btn btn-accent" id="add-bill-item">+ Add Service</button>
+          <button type="button" class="btn btn-ghost" id="add-custom-amount">+ Custom Amount</button>
+        </div>
+        <div class="bill-total">
+          <div>Subtotal: <span id="bill-sub">₹0</span></div>
+          <div>Total: <strong id="bill-total">₹0</strong></div>
+        </div>
+        <div style="margin-top:8px;">
+          <label style="font-size:12px;color:var(--ink-dim);letter-spacing:0.04em;display:block;margin-bottom:8px;">Payment Status</label>
+          <div class="pay-status-btns">
+            <button type="button" class="pay-chip active-paid" id="pay-paid" data-status="Paid">✓ Paid</button>
+            <button type="button" class="pay-chip" id="pay-unpaid" data-status="Unpaid">○ Unpaid</button>
+          </div>
+        </div>
+        <div class="bill-actions">
+          <button type="button" class="btn btn-primary" id="save-bill">Save &amp; Preview</button>
+          <button type="button" class="btn btn-accent" id="print-bill">Preview Invoice</button>
+          <button type="button" class="btn btn-ghost" id="clear-bill">Clear</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="panel" id="panel-inventory">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:12px;">
+        <h3 style="font-family:'Baloo 2';font-size:18px;color:var(--white);">Services List</h3>
+        <button class="btn btn-accent" id="add-service-btn">+ Add Service</button>
+      </div>
+      <div class="glass-card" id="add-service-form" style="display:none;">
+        <h3>New Service</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Service Name</label>
+            <input type="text" id="svc-name" placeholder="e.g. Website Design" />
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="svc-cat">
+              <option>IT Support</option>
+              <option>Software</option>
+              <option>Web</option>
+              <option>Hardware</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Price (₹)</label>
+            <input type="number" id="svc-price" min="0" placeholder="0" />
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select id="svc-status">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;">
+          <button type="button" class="btn btn-primary" id="save-service-btn">Save Service</button>
+          <button type="button" class="btn btn-ghost" id="cancel-service-btn">Cancel</button>
+        </div>
+      </div>
+      <div class="glass-card">
+        <table class="data-table">
+          <thead>
+            <tr><th>Code</th><th>Service</th><th>Category</th><th>Price</th><th>Status</th><th>Action</th></tr>
+          </thead>
+          <tbody id="inventory-body">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- REPORT -->
+    <section class="panel" id="panel-report">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">This Month Sales</div>
+          <div class="stat-value accent" id="rep-sales">₹0</div>
+          <div class="stat-change up" id="rep-sales-sub">From saved bills</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Paid Total</div>
+          <div class="stat-value" id="rep-paid" style="color:var(--success)">₹0</div>
+          <div class="stat-change up">Collected</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Unpaid / Due</div>
+          <div class="stat-value" id="rep-unpaid" style="color:var(--danger)">₹0</div>
+          <div class="stat-change down" id="rep-unpaid-count">0 bills pending</div>
+        </div>
+      </div>
+      <div class="glass-card">
+        <h3>Unpaid Bills <span style="font-size:12px;font-weight:500;color:var(--ink-dim);">(click Mark Paid to clear)</span></h3>
+        <table class="data-table">
+          <thead>
+            <tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th><th>Action</th></tr>
+          </thead>
+          <tbody id="unpaid-body">
+            <tr><td colspan="6" style="text-align:center;color:var(--ink-dim);padding:24px;">No unpaid bills</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="glass-card">
+        <h3>All Saved Bills</h3>
+        <table class="data-table">
+          <thead>
+            <tr><th>Invoice</th><th>Customer</th><th>Amount</th><th>Date</th><th>Status</th></tr>
+          </thead>
+          <tbody id="all-bills-body">
+            <tr><td colspan="5" style="text-align:center;color:var(--ink-dim);padding:24px;">No bills saved yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="glass-card">
+        <h3>Sales by Category</h3>
+        <table class="data-table">
+          <thead><tr><th>Category</th><th>Orders</th><th>Revenue</th><th>Share</th></tr></thead>
+          <tbody>
+            <tr><td>Software</td><td>186</td><td>₹1,42,000</td><td>37%</td></tr>
+            <tr><td>Web</td><td>64</td><td>₹98,500</td><td>26%</td></tr>
+            <tr><td>IT Support</td><td>112</td><td>₹45,200</td><td>12%</td></tr>
+            <tr><td>Others</td><td>98</td><td>₹98,500</td><td>25%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CUSTOMER -->
+    <section class="panel" id="panel-customer">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+        <h3 style="font-family:'Baloo 2';font-size:18px;color:var(--white);">Customer Directory</h3>
+        <button class="btn btn-accent" id="add-customer-btn">+ Add Customer</button>
+      </div>
+      <div class="glass-card">
+        <table class="data-table">
+          <thead>
+            <tr><th>Name</th><th>Phone</th><th>City</th><th>Total Orders</th><th>Due</th></tr>
+          </thead>
+          <tbody id="customer-body">
+            <tr><td>Kumar Stores</td><td>98765 43210</td><td>Chennai</td><td>48</td><td>₹0</td></tr>
+            <tr><td>Anitha Traders</td><td>87654 32109</td><td>Coimbatore</td><td>32</td><td>₹1,200</td></tr>
+            <tr><td>Senthil Agencies</td><td>76543 21098</td><td>Madurai</td><td>67</td><td>₹0</td></tr>
+            <tr><td>Priya Mart</td><td>65432 10987</td><td>Salem</td><td>15</td><td>₹3,450</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TODAY -->
+    <section class="panel" id="panel-today">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Cash in Hand</div>
+          <div class="stat-value accent">₹18,420</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Bills Today</div>
+          <div class="stat-value">47</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value" style="color:var(--danger)">3</div>
+        </div>
+      </div>
+      <div class="glass-card">
+        <h3>Today's Activity</h3>
+        <ul class="activity-list">
+          <li class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <strong>New bill #INV-1042 created</strong>
+              <span>Kumar Stores · ₹3,450 · 10:42 AM</span>
+            </div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-dot" style="background:var(--success);"></div>
+            <div>
+              <strong>Payment received</strong>
+              <span>Anitha Traders · ₹1,890 · 09:20 AM</span>
+            </div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-dot" style="background:var(--danger);"></div>
+            <div>
+              <strong>Service completed</strong>
+              <span>Website Design · Kumar Stores · 08:05 AM</span>
+            </div>
+          </li>
+          <li class="activity-item">
+            <div class="activity-dot"></div>
+            <div>
+              <strong>New customer added</strong>
+              <span>Priya Mart · Salem · Yesterday</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- COOKED SOFTWARES -->
+    <section class="panel" id="panel-cooked">
+      <div class="upload-zone" id="upload-zone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <h4>Upload your software</h4>
+        <p>Drag & drop HTML / ZIP / EXE files or click to browse<br>
+          <small style="opacity:0.7">Your softwares are saved locally in this browser</small></p>
+        <input type="file" id="soft-file" multiple accept=".html,.htm,.zip,.exe,.js,.css,.json" style="display:none" />
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h3 style="font-family:'Baloo 2';font-size:18px;color:var(--white);">My Softwares</h3>
+        <button class="btn btn-ghost" id="clear-all-soft" style="font-size:12px;">Clear All</button>
+      </div>
+      <div class="soft-grid" id="soft-grid">
+        <!-- filled by JS -->
+      </div>
+      <p id="soft-empty" style="text-align:center;color:var(--ink-dim);padding:40px 0;display:none;">
+        No softwares uploaded yet. Upload your first one above!
+      </p>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="panel" id="panel-settings">
+      <div class="glass-card">
+        <h3>Business Profile</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Business Name</label>
+            <input type="text" value="RAHMATH IT SOLUTION" id="set-biz" />
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" value="+91 98765 43210" id="set-phone" />
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" value="info@rahmathit.com" id="set-email" />
+          </div>
+          <div class="form-group">
+            <label>GSTIN</label>
+            <input type="text" value="33AAAAA0000A1Z5" id="set-gst" />
+          </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:16px;" id="save-settings">Save Profile</button>
+      </div>
+
+      <div class="glass-card">
+        <h3>Google Drive Backup</h3>
+        <p style="font-size:12px;color:var(--ink-dim);margin-bottom:14px;">Connect to back up bills, services &amp; settings (browser storage sync helper)</p>
+        <div class="gdrive-card">
+          <div class="gdrive-icon">☁</div>
+          <div class="gdrive-info">
+            <strong>Google Drive</strong>
+            <span id="gdrive-detail">Not connected · Data stays in this browser until you export</span>
+            <div class="gdrive-status off" id="gdrive-status">Disconnected</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="btn btn-accent" id="gdrive-connect">Connect</button>
+            <button type="button" class="btn btn-ghost" id="gdrive-export">Export JSON</button>
+            <button type="button" class="btn btn-ghost" id="gdrive-import">Import JSON</button>
+            <input type="file" id="gdrive-file" accept=".json,application/json" style="display:none" />
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3>Change Password</h3>
+        <p style="font-size:12px;color:var(--ink-dim);margin-bottom:14px;">Update login password for the current user</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Current Password</label>
+            <input type="password" id="pwd-current" placeholder="Current password" />
+          </div>
+          <div class="form-group">
+            <label>New Password</label>
+            <input type="password" id="pwd-new" placeholder="New password" />
+          </div>
+          <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" id="pwd-confirm" placeholder="Confirm new password" />
+          </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:16px;" id="save-password">Update Password</button>
+      </div>
+
+      <div class="glass-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+          <h3 style="margin:0;">Users</h3>
+          <button class="btn btn-accent" id="add-user-btn">+ Add User</button>
+        </div>
+        <div id="add-user-form" style="display:none;margin-bottom:18px;padding:16px;border-radius:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" id="new-user-name" placeholder="username" />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="new-user-pass" placeholder="password" />
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <select id="new-user-role">
+                <option value="Staff">Staff</option>
+                <option value="Owner">Owner</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:10px;">
+            <button type="button" class="btn btn-primary" id="save-user-btn">Save User</button>
+            <button type="button" class="btn btn-ghost" id="cancel-user-btn">Cancel</button>
+          </div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr><th>Username</th><th>Role</th><th>Action</th></tr>
+          </thead>
+          <tbody id="users-body"></tbody>
+        </table>
+      </div>
+
+      <div class="glass-card danger-zone">
+        <h3>⚠ System Reset</h3>
+        <p style="font-size:12px;color:var(--ink-dim);margin-bottom:14px;">
+          Clears all bills, services, softwares &amp; invoice counter. Users are kept. Requires reset password.
+        </p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Reset Password</label>
+            <input type="password" id="reset-pwd-input" placeholder="Enter reset password" />
+          </div>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+          <button type="button" class="btn btn-danger" id="btn-system-reset">Reset All Data</button>
+        </div>
+        <div style="margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,100,100,0.2);">
+          <h3 style="font-size:15px;color:var(--white);margin-bottom:10px;">Change Reset Password</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Current Reset Password</label>
+              <input type="password" id="reset-pwd-cur" placeholder="Current reset password" />
+            </div>
+            <div class="form-group">
+              <label>New Reset Password</label>
+              <input type="password" id="reset-pwd-new" placeholder="New reset password" />
+            </div>
+            <div class="form-group">
+              <label>Confirm</label>
+              <input type="password" id="reset-pwd-conf" placeholder="Confirm new" />
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary" style="margin-top:12px;" id="btn-change-reset-pwd">Update Reset Password</button>
+          <p style="font-size:11px;color:var(--ink-dim);margin-top:10px;">Default reset password: <strong style="color:var(--accent);">reset@123</strong></p>
+        </div>
+      </div>
+
+      <div class="glass-card">
+        <h3>Preferences</h3>
+        <div class="settings-row">
+          <div>
+            <strong style="color:var(--white);">Dark Theme</strong>
+            <div style="font-size:12px;color:var(--ink-dim);">Brick wall & lamp aesthetic</div>
+          </div>
+          <div class="toggle on" id="tog-theme"></div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <strong style="color:var(--white);">Sound Effects</strong>
+            <div style="font-size:12px;color:var(--ink-dim);">Click & notification sounds</div>
+          </div>
+          <div class="toggle" id="tog-sound"></div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <strong style="color:var(--white);">Auto Backup</strong>
+            <div style="font-size:12px;color:var(--ink-dim);">Save data to browser daily</div>
+          </div>
+          <div class="toggle on" id="tog-backup"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Service picker modal -->
+<div class="modal-overlay" id="svc-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Select Service</h3>
+      <button type="button" class="modal-close" id="svc-modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="text" class="svc-pick-search" id="svc-pick-search" placeholder="Search services..." />
+      <div class="svc-pick-list" id="svc-pick-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Invoice web preview -->
+<div class="preview-overlay" id="preview-overlay">
+  <div class="preview-box">
+    <div class="preview-toolbar">
+      <h3>Invoice Preview</h3>
+      <div class="btns">
+        <button type="button" class="btn btn-primary btn-sm" id="preview-print">Print</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="preview-close" style="color:#fff;border-color:rgba(255,255,255,0.25);">Close</button>
+      </div>
+    </div>
+    <div class="preview-body" id="preview-body"></div>
+  </div>
+</div>
+
+<div id="print-area"></div>
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
